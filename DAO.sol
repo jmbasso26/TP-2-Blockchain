@@ -133,7 +133,7 @@ contract DAO is Member {
         return currentElection.isActive;
     }
 
-
+    //Permite a un ejecutivo presentarse a la eleccion
     function nominateCandidate() external onlyExecutive {
         require(currentElection.isActive, "La eleccion debe estar activa");
         require(block.timestamp < currentElection.endTime, "La eleccion ya ha terminado");
@@ -155,7 +155,7 @@ contract DAO is Member {
         emit CandidateVoted(candidateIndex);
 
     }
-
+    //Devuelve las direcciones de los candidatsos
     function getCandidateAddresses() public view returns (address[] memory) {
         address[] memory addresses = new address[](currentElection.candidates.length);
         for (uint i = 0; i < currentElection.candidates.length; i++) {
@@ -163,7 +163,7 @@ contract DAO is Member {
         }
         return addresses;
     }
-
+    //Da por finalizada la eleccion
     function endElection() external onlyPresidentOrExecutive{
         require(currentElection.isActive, "No active election to end.");
         require(block.timestamp >= currentElection.endTime, "Election period has not ended yet.");
