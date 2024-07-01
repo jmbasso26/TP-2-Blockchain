@@ -21,7 +21,7 @@ contract Member {
     // Variables de estado
     mapping(address => Members) public members;
     mapping(address => PromotionRequest) public promotionRequests;
-    uint256 private activeMember;
+    uint256 public activeMember;
 
     // Eventos
     event President(address member);
@@ -30,10 +30,11 @@ contract Member {
     event MemberRemoved(address member);
     event PromotionInitiated(address member, Role newRole);
     event PromotionApproved(address member);
+    event OldPresidentToExecutive(address member);
 
     // Modificadores 
     modifier OnlyPresident(){
-        require(members[msg.sender].role == Role.Directivo, "Solo el presidente puede llamar a esta funcion");
+        require(members[msg.sender].role == Role.Presidente, "Solo el presidente puede llamar a esta funcion");
         _;
     }
 
@@ -59,13 +60,7 @@ contract Member {
 
     // Constructor
     constructor(){
-        members[msg.sender] = Members({
-            id: msg.sender,
-            role: Role.Presidente,
-            isActive: true
-        });
-        activeMember+=1000;
-        emit President(msg.sender);
+
     }
 
     // Función para añadir un nuevo miembro
@@ -113,7 +108,7 @@ contract Member {
     }
 
     // Función para eliminar un miembro
-    function removeMember(address _member) external OnlyExecutive {
+    function removeMember(address _member) external  {
         // Implementar 
         require(members[_member].isActive, "La direccion no pertenece a ningun miembro");
         members[_member].isActive = false;
@@ -132,9 +127,7 @@ contract Member {
             return activeMember;
         } else {
             return activeMember / 1000;
-    }
-
+        }
     }
 
 }
-
